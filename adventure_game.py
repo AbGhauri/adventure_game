@@ -1,3 +1,8 @@
+#sp23-bai-003
+import json
+
+SAVE_FILE_PATH = "save_file.json"
+
 #SP23_bai_002
 
 game_state = {
@@ -290,3 +295,129 @@ def show_inventory():
             print(f"- {item}")
     else:
         print("\nYour inventory is empty.")
+
+
+#sp23-bai-003
+import json
+
+SAVE_FILE_PATH = "save_file.json"
+
+# Move log file
+move_log_file = "move_log.txt"
+
+# Function to log each move to the save file
+def log_move(move):
+    try:
+        with open(move_log_file, "a") as log_file:
+            log_file.write(move + "\n")
+    except Exception as e:
+        print(f"\nError logging move: {e}")
+
+
+# Function to show player's inventory
+def show_inventory():
+    if game_state["inventory"]:
+        print("\nYour inventory contains:")
+        for item in game_state["inventory"]:
+            print(f"- {item}")
+    else:
+        print("\nYour inventory is empty.")
+
+
+# Function to show help menu
+def show_help():
+    print("\n--- Help Menu ---")
+    print("Available commands:")
+    print("- 'move [direction]' to move in a direction (N, S, E, W)")
+    print("- 'take' to pick up an item in the room")
+    print("- 'drop [item]' to drop an item from your inventory")
+    print("- 'inventory' to view your current inventory")
+    print("- 'look' to look around the current room")
+    print("- 'hint' to receive a hint (Max 2 per game)")
+    print("- 'save' to save your game")
+    print("- 'load' to load a previously saved game")
+    print("- 'quit' to exit the game")
+
+# Function to save the game
+def save_game():
+    try:
+        with open(SAVE_FILE_PATH, 'w') as save_file:
+            json.dump(game_state, save_file)
+        print("\nGame saved successfully.")
+    except Exception as e:
+        print(f"Error saving game: {e}")
+
+# Function to load the game
+def load_game():
+    global game_state
+    try:
+        with open(SAVE_FILE_PATH, 'r') as save_file:
+            game_state = json.load(save_file)
+        print("\nGame loaded successfully.")
+        look()  # Display the current room after loading
+    except FileNotFoundError:
+        print("\nNo saved game found.")
+    except Exception as e:
+        print(f"Error loading game: {e}")
+
+# Function to display the main menu
+def main_menu():
+    print("\n-- Main Menu --")
+    print("1. Look around")
+    print("2. Move to another room")
+    print("3. Take an item")
+    print("4. Drop an item")
+    print("5. View inventory")
+    print("6. Solve task")
+    print("7. Save game")
+    print("8. Load game")
+    print("9. Get a hint")
+    print("10. Help")
+    print("11. Pause and Quit")
+
+
+
+
+  # Main game loop
+def play_game():
+    print("Welcome to the Enchanted Labyrinth!")
+    look()
+
+    while True:
+        main_menu()
+        choice = input("\nChoose an option (1-11): ").strip()
+
+        if choice == "1":
+            look()
+        elif choice == "2":
+            while True:
+                direction = input("Which direction do you want to move (N/n, S/s, E/e, W/w)? ").strip().lower()
+                if move(direction):
+                    break
+        elif choice == "3":
+            take()
+        elif choice == "4":
+            item = input("Which item do you want to drop? ").strip().lower()
+            drop(item)
+        elif choice == "5":
+            show_inventory()
+        elif choice == "6":
+            solve_task()
+        elif choice == "7":
+            save_game()
+        elif choice == "8":
+            load_game()
+        elif choice == "9":
+            give_hint()
+        elif choice == "10":
+            show_help()
+        elif choice == "11":  # Pause and Quit
+            save_game()
+            print("Game paused and saved. You can resume later!")
+            break
+        else:
+            print("Invalid option. Please select a valid number (1-11).")
+
+# Start the game
+if _name_ == "_main_":
+    play_game()
